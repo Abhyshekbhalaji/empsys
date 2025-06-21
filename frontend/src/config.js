@@ -1,2 +1,2 @@
-const PROD_URL='http://empsys-production.up.railway.app';
+const PROD_URL='https://empsys-production.up.railway.app';
 export default PROD_URL;

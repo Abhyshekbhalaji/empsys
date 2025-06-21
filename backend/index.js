@@ -20,7 +20,7 @@ apk.use('/api',router);
 
 const PORT = 3001;
 
-const listener = apk.listen(PORT, () => {
+const listener = apk.listen(PORT,'0.0.0.0', () => {
 
   console.log("Connected on port",PORT);
 });

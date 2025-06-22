@@ -154,6 +154,7 @@ const EmployeeDetails = () => {
             borderRadius: 3,
             overflow: 'hidden',
             boxShadow: theme.shadows[8],
+            maxHeight: '70vh', // Set max height for scrolling
           }}
         >
           {employees.length === 0 ? (
@@ -182,8 +183,8 @@ const EmployeeDetails = () => {
               </Typography>
             </Box>
           ) : (
-            <TableContainer>
-              <Table sx={{ minWidth: 650 }}>
+            <TableContainer sx={{ maxHeight: '60vh', overflowY: 'auto' }}>
+              <Table sx={{ minWidth: 650 }} stickyHeader>
                 <TableHead>
                   <TableRow 
                     sx={{ 

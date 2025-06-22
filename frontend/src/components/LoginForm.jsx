@@ -66,6 +66,7 @@ const LoginPage = () => {
           navigate(`/employee-dashboard/${data.user._id}`);
         }
       } catch (err) {
+        alert(err.message);
         showToast("Invalid credentials", "error");
         showToast("Login failed", "error");
       }

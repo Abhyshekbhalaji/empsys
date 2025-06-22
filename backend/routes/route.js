@@ -6,24 +6,54 @@ import Employee from '../models/Employee.js';
 
 
 const router = express.Router();
-
-router.post('/employees' , async(req,res)=>{
-    try{
-        console.log(req.body);
-        const {email, name, password}=req.body;
-        let user_id = email;
-       
-         if (!user_id || !name || !password) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
-        const emp = new Employee({user_id, name,password});
-        await emp.save();
-        res.status(201).json({message:"Employee added successfully!",emp});
-
-    }catch(err){
-        res.status(400).json({error:err.message});
-    }
+router.get('/test',(req,res)=>{
+console.log("OK")
+    res.status(201).json("Ho");
 })
+router.post('/employees', async (req, res) => {
+    try {
+        console.log('Request body:', req.body); // Debug log
+        
+        const { email, name, password, position } = req.body;
+        
+        // Validation
+        if (!email || !name || !password || !position) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+        
+        // Validate position/role
+        if (!['employee', 'admin'].includes(position)) {
+            return res.status(400).json({ error: "Invalid position. Must be 'employee' or 'admin'" });
+        }
+        
+        const user_id = email;
+        const role = position; 
+        
+        console.log('Creating employee with role:', role); // Debug log
+        
+        const emp = new Employee({ 
+            user_id, 
+            name, 
+            password, 
+            role 
+        });
+        
+        console.log('Employee object before save:', emp); // Debug log
+        
+        await emp.save();
+        
+        console.log('Employee saved with role:', emp.role); // Debug log
+        
+        res.status(201).json({ 
+            message: `${role} added successfully!`, 
+            employee: emp 
+        });
+        
+    } catch (err) {
+        console.error('Error creating employee:', err);
+        res.status(400).json({ error: err.message });
+    }
+});
 router.post('/leaves',async(req,res)=>{
     try{
         const {employee,fromDate,toDate,reason}=req.body;

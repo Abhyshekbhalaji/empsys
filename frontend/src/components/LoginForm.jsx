@@ -52,7 +52,10 @@ const LoginPage = () => {
           body: JSON.stringify(values),
         });
 
-        if (!res.ok) throw new Error("Invalid credentials");
+        if (!res.ok){
+           showToast("Invalid credentials", "error");
+          throw new Error("Invalid credentials");
+        } 
         const data = await res.json();
 
         localStorage.setItem("token", data.token);
@@ -66,12 +69,14 @@ const LoginPage = () => {
           navigate(`/employee-dashboard/${data.user._id}`);
         }
       } catch (err) {
-        alert(err.message);
+        console.log(err.message);
         showToast("Invalid credentials", "error");
         showToast("Login failed", "error");
+      }finally{
+          formik.resetForm();
       }
 
-      formik.resetForm();
+    
     }
   });
 

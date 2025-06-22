@@ -34,7 +34,7 @@ const EmployeeDetails = () => {
   useEffect(() => {
     fetchEmployees();
   }, []);
-
+console.log(employees);
   const fetchEmployees = async () => {
     try {
       const res = await axios.get(`${API_BASE_URL}/api/admin/employees`);
@@ -47,6 +47,7 @@ const EmployeeDetails = () => {
   };
 
   const getRoleColor = (role) => {
+    console.log("Role received:", role, "Type:", typeof role); // Debug log
     const roleColors = {
       admin: 'error',
       manager: 'primary',
@@ -54,11 +55,15 @@ const EmployeeDetails = () => {
       intern: 'info',
       contractor: 'warning',
     };
-    return roleColors[role?.toLowerCase()] || 'default';
+    const normalizedRole = role?.toLowerCase()?.trim();
+    console.log("Normalized role:", normalizedRole); // Debug log
+    return roleColors[normalizedRole] || 'default';
   };
 
   const getRoleIcon = (role) => {
-    switch (role?.toLowerCase()) {
+    console.log("Role icon for:", role); // Debug log
+    const normalizedRole = role?.toLowerCase()?.trim();
+    switch (normalizedRole) {
       case 'admin':
         return <AdminIcon fontSize="small" />;
       case 'manager':
@@ -225,6 +230,7 @@ const EmployeeDetails = () => {
                 </TableHead>
                 <TableBody>
                   {employees.map((emp, index) => (
+                 
                     <TableRow 
                       key={emp._id}
                       sx={{
@@ -277,7 +283,7 @@ const EmployeeDetails = () => {
                       <TableCell>
                         <Chip
                           icon={getRoleIcon(emp.role)}
-                          label={emp.role || 'Employee'}
+                          label={emp.role || 'Admin'}
                           color={getRoleColor(emp.role)}
                           variant="outlined"
                           size="small"
@@ -286,6 +292,8 @@ const EmployeeDetails = () => {
                             textTransform: 'capitalize',
                           }}
                         />
+                      
+                   
                       </TableCell>
                       <TableCell>
                         <Typography 

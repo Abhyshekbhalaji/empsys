@@ -27,10 +27,18 @@ const EmployeeForm = () => {
     onSubmit: async (values) => {
       try {
         console.log(values);
+         const payload = {
+      name: values.name,
+      email: values.email,
+      position: values.position,
+      password: values.password
+    };
+    console.log(values.position);
+    console.log(JSON.stringify(payload));
         const res = await fetch(`${API_BASE_URL}/api/employees`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(values)
+          body: JSON.stringify(payload)
         });
 
         if (!res.ok) throw new Error('Failed to save');

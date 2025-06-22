@@ -5,12 +5,15 @@ import {
   FormControl, InputLabel, Select, MenuItem, TableContainer
 } from '@mui/material';
 import axios from 'axios';
-import API_BASE_URL from '../../config'
+import API_BASE_URL from '../../config';
+import { useToast } from '../ToasterContext';
+
 const ApproveLeave = () => {
   const [leaves, setLeaves] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('');
+  const showToast = useToast(); // ✅ Toast hook
 
   const fetchLeaves = async () => {
     try {
@@ -18,6 +21,7 @@ const ApproveLeave = () => {
       setLeaves(res.data);
     } catch (err) {
       console.error('Error fetching leaves:', err);
+      showToast('Failed to fetch leave requests', 'error'); // optional toast
     }
   };
 
@@ -42,27 +46,26 @@ const ApproveLeave = () => {
       await axios.patch(`${API_BASE_URL}/api/leaves/${selectedLeave._id}/status`, {
         status: selectedStatus,
       });
-      
-     
-      setLeaves(prevLeaves => 
-        prevLeaves.map(leave => 
-          leave._id === selectedLeave._id 
+
+      setLeaves(prevLeaves =>
+        prevLeaves.map(leave =>
+          leave._id === selectedLeave._id
             ? { ...leave, status: selectedStatus }
             : leave
         )
       );
-      
-   
+
       fetchLeaves();
       handleClose();
+      showToast(`Leave ${selectedStatus.toLowerCase()} successfully`, 'success'); // ✅ Success toast
     } catch (err) {
       console.error('Error updating leave status:', err);
-      alert('Error updating leave status. Please try again.');
+      showToast('Error updating leave status. Please try again.', 'error'); // ✅ Error toast
     }
   };
 
   return (
-    <Box sx={{ 
+    <Box sx={{
       width: '100%',
       maxWidth: '100%',
       overflow: 'hidden',
@@ -72,12 +75,12 @@ const ApproveLeave = () => {
         Leave Requests Management
       </Typography>
 
-      <Paper sx={{ 
+      <Paper sx={{
         width: '100%',
         overflow: 'hidden',
         boxShadow: 2
       }}>
-        <TableContainer sx={{ 
+        <TableContainer sx={{
           maxHeight: 'calc(100vh - 200px)',
           overflow: 'auto'
         }}>
@@ -120,7 +123,7 @@ const ApproveLeave = () => {
                     <TableCell>
                       {new Date(leave.toDate).toLocaleDateString()}
                     </TableCell>
-                    <TableCell sx={{ 
+                    <TableCell sx={{
                       maxWidth: 200,
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
@@ -130,8 +133,8 @@ const ApproveLeave = () => {
                     </TableCell>
                     <TableCell>
                       {leave.status === 'Pending' ? (
-                        <Button 
-                          variant="outlined" 
+                        <Button
+                          variant="outlined"
                           size="small"
                           onClick={() => handleOpen(leave)}
                           sx={{ minWidth: 'auto' }}
@@ -163,8 +166,8 @@ const ApproveLeave = () => {
         </TableContainer>
       </Paper>
 
-      <Dialog 
-        open={open} 
+      <Dialog
+        open={open}
         onClose={handleClose}
         maxWidth="sm"
         fullWidth

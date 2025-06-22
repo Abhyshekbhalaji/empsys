@@ -2,11 +2,15 @@ import React from "react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {
-  TextField, Button, Box, FormControl, MenuItem, Select, 
+  TextField, Button, Box, FormControl, MenuItem, Select,
   InputLabel, FormHelperText, Typography, Paper
 } from '@mui/material';
-import API_BASE_URL from '../../config'
+import API_BASE_URL from '../../config';
+import { useToast } from "../ToasterContext";
+
 const EmployeeForm = () => {
+  const showToast = useToast(); // ✅ Toast hook
+
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -28,22 +32,21 @@ const EmployeeForm = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(values)
         });
-        
+
         if (!res.ok) throw new Error('Failed to save');
-        
-        alert(`${values.position} has been added successfully!`);
-        
-    
+
+        showToast(`${values.position} has been added successfully!`, 'success'); // ✅ toast
+
         formik.resetForm();
       } catch (err) {
         console.log("Error in the employee form: " + err.message);
-        alert('Error adding employee. Please try again.');
+        showToast('Error adding employee. Please try again.', 'error'); // ✅ toast
       }
     }
   });
 
   return (
-    <Box sx={{ 
+    <Box sx={{
       width: '100%',
       maxWidth: '100%',
       overflow: 'hidden',
@@ -53,13 +56,13 @@ const EmployeeForm = () => {
         Add New Employee
       </Typography>
 
-      <Paper sx={{ 
+      <Paper sx={{
         p: 3,
         maxWidth: 500,
         mx: 'auto',
         boxShadow: 2
       }}>
-        <Box 
+        <Box
           component='form'
           onSubmit={formik.handleSubmit}
           sx={{
@@ -132,9 +135,9 @@ const EmployeeForm = () => {
             variant="outlined"
           />
 
-          <Button 
-            color="primary" 
-            variant="contained" 
+          <Button
+            color="primary"
+            variant="contained"
             type="submit"
             size="large"
             disabled={formik.isSubmitting}

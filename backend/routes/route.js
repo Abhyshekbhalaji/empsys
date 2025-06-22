@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post('/employees' , async(req,res)=>{
     try{
-   
+        console.log(req.body);
         const {email, name, password}=req.body;
         let user_id = email;
        
@@ -28,6 +28,11 @@ router.post('/leaves',async(req,res)=>{
     try{
         const {employee,fromDate,toDate,reason}=req.body;
         console.log(req.body);
+         if (!employee || !fromDate || !toDate || !reason) {
+      return res.status(400).json({
+        error: 'Missing required fields: employee, fromDate, toDate, reason'
+      });
+    }
         const leave = new Leave({employee,fromDate,toDate, reason})
         await leave.save();
         res.status(201).json({ message: "Leave request added successfully", leave });
